@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AuraSafe Control - AuraSix</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#0c0c14;
+    color:white;
+}
+
+header{
+    background:#141426;
+    padding:15px;
+    text-align:center;
+    font-size:22px;
+    letter-spacing:1px;
+    border-bottom:2px solid #7b2cff;
+}
+
+.container{
+    display:flex;
+    height:90vh;
+}
+
+.map{
+    flex:3;
+    position:relative;
+    background:#1a1a2e;
+    margin:15px;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.sidebar{
+    flex:1;
+    background:#141426;
+    margin:15px 15px 15px 0;
+    border-radius:12px;
+    padding:20px;
+}
+
+.card{
+    background:#1f1f35;
+    padding:15px;
+    margin-bottom:15px;
+    border-radius:10px;
+}
+
+.status{
+    font-size:18px;
+    margin-top:10px;
+}
+
+.person{
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    position:absolute;
+    cursor:pointer;
+}
+
+.green{ background:#00ff88; }
+.yellow{ background:#ffd000; }
+.red{ background:#ff2e2e; }
+
+.alert{
+    position:fixed;
+    top:20px;
+    right:20px;
+    background:red;
+    padding:15px 25px;
+    border-radius:10px;
+    display:none;
+    font-weight:bold;
+    animation:blink 1s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:0.5;}
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#7b2cff;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#9b59ff;
+}
+
+.infoBox{
+    margin-top:15px;
+    background:#1f1f35;
+    padding:15px;
+    border-radius:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+🛡️ AuraSafe Control | Segurança & Infraestrutura - AuraSix Experience
+</header>
+
+<div class="container">
+
+<div class="map" id="map">
+
+<!-- Pessoas -->
+<div class="person green" style="top:40%; left:30%;" onclick="showInfo('Convidado 021','Normal','Área Lounge')"></div>
+
+<div class="person yellow" style="top:60%; left:50%;" onclick="showInfo('Convidado 045','Atenção','Entrada')"></div>
+
+<div id="riskPerson" class="person green" style="top:30%; left:70%;" onclick="showInfo('Convidado 078','Normal','Área VIP')"></div>
+
+</div>
+
+<div class="sidebar">
+
+<div class="card">
+<h3>Status do Evento</h3>
+<p>Pessoas presentes: <b id="people">284</b></p>
+<p>Áreas seguras: <b>96%</b></p>
+<p>Alertas ativos: <b id="alerts">0</b></p>
+</div>
+
+<button onclick="simulateIncident()">🚨 Simular Incidente</button>
+
+<div class="infoBox" id="info">
+Clique em um participante no mapa.
+</div>
+
+</div>
+
+</div>
+
+<div class="alert" id="alertBox">
+⚠ ALERTA DE SEGURANÇA DETECTADO
+</div>
+
+<script>
+
+function showInfo(nome,status,local){
+
+document.getElementById("info").innerHTML =
+"<b>Participante:</b> "+nome+
+"<br><b>Status:</b> "+status+
+"<br><b>Localização:</b> "+local;
+
+}
+
+function simulateIncident(){
+
+let person = document.getElementById("riskPerson");
+
+person.classList.remove("green");
+person.classList.add("red");
+
+document.getElementById("alerts").innerText = "1";
+
+let alertBox = document.getElementById("alertBox");
+alertBox.style.display = "block";
+
+setTimeout(()=>{
+alertBox.style.display="none";
+},4000);
+
+}
+
+</script>
+
+</body>
+</html>
