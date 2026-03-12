@@ -12,9 +12,9 @@ margin:0;
 font-family:Arial, sans-serif;
 background:#0b0b16;
 color:white;
+overflow:hidden;
 }
 
-/* TOPO */
 header{
 background:#15152b;
 padding:15px;
@@ -23,16 +23,14 @@ font-size:22px;
 border-bottom:2px solid #7b2cff;
 }
 
-/* LAYOUT */
 .container{
 display:flex;
-flex-wrap:wrap;
 }
 
-/* MAPA ARQUITETÔNICO */
+/* MAPA */
 .map{
 flex:2;
-height:600px;
+height:650px;
 margin:15px;
 border-radius:10px;
 background:#111122;
@@ -40,7 +38,7 @@ position:relative;
 overflow:hidden;
 }
 
-/* LINHAS ARQUITETÔNICAS */
+/* ÁREAS */
 .area{
 position:absolute;
 border:2px solid rgba(255,255,255,0.2);
@@ -51,7 +49,6 @@ align-items:center;
 justify-content:center;
 }
 
-/* ÁREAS DO EVENTO */
 .entrada{top:5%;left:5%;width:25%;height:20%;}
 .pista{top:30%;left:10%;width:60%;height:50%;}
 .vip{top:10%;left:70%;width:25%;height:25%;}
@@ -66,30 +63,18 @@ border-radius:10px;
 padding:15px;
 }
 
-/* PESSOAS */
 .person{
-width:10px;
-height:10px;
+width:8px;
+height:8px;
 border-radius:50%;
 position:absolute;
+transition:all 2s linear;
 cursor:pointer;
 }
 
 .green{background:#00ff88;}
 .yellow{background:#ffd000;}
 .red{background:#ff3b3b;}
-
-button{
-width:100%;
-padding:12px;
-border:none;
-background:#7b2cff;
-color:white;
-border-radius:8px;
-font-size:16px;
-margin-top:15px;
-cursor:pointer;
-}
 
 .alert{
 position:fixed;
@@ -107,6 +92,18 @@ animation:pulse 1s infinite;
 50%{opacity:0.5;}
 }
 
+button{
+width:100%;
+padding:12px;
+border:none;
+background:#7b2cff;
+color:white;
+border-radius:8px;
+margin-top:15px;
+font-size:16px;
+cursor:pointer;
+}
+
 .info{
 margin-top:15px;
 background:#1c1c34;
@@ -120,15 +117,13 @@ border-radius:8px;
 <body>
 
 <header>
-🛡️ AuraSafe Control | Monitoramento de Evento - AuraSix
+🛡️ AuraSafe Control | Monitoramento Inteligente AuraSix
 </header>
 
 <div class="container">
 
-<!-- MAPA -->
 <div class="map" id="mapa">
 
-<!-- ÁREAS -->
 <div class="area entrada">ENTRADA</div>
 <div class="area pista">PISTA PRINCIPAL</div>
 <div class="area vip">ÁREA VIP</div>
@@ -136,17 +131,16 @@ border-radius:8px;
 
 </div>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
 
 <h3>Status do Evento</h3>
-<p>Participantes: <b id="total">0</b></p>
-<p>Alertas ativos: <b id="alertas">0</b></p>
+<p>Participantes: <b id="total"></b></p>
+<p>Alertas ativos: <b id="alertas">6</b></p>
 
 <button onclick="intervencao()">⚠ Alerta de Intervenção</button>
 
 <div class="info" id="info">
-Clique em uma pessoa no mapa.
+Sistema ativo. Monitoramento em tempo real.
 </div>
 
 </div>
@@ -154,46 +148,74 @@ Clique em uma pessoa no mapa.
 </div>
 
 <div class="alert" id="alerta">
-🚨 INTERVENÇÃO NECESSÁRIA
+🚨 EQUIPE DE SEGURANÇA ACIONADA
 </div>
 
 <script>
 
-/* CRIAR MUITAS PESSOAS AUTOMATICAMENTE */
-
 const mapa = document.getElementById("mapa");
-let totalPessoas = 280; // quantidade do evento
+const totalPessoas = 280;
+document.getElementById("total").innerText = totalPessoas;
 
+let pessoas=[];
+
+/* DISTRIBUIÇÃO REALISTA */
+function gerarStatus(){
+let r=Math.random();
+
+if(r<0.85) return "green";     // maioria normal
+if(r<0.96) return "yellow";    // atenção
+return "red";                  // poucos riscos
+}
+
+/* CRIAR PARTICIPANTES */
 for(let i=0;i<totalPessoas;i++){
 
-let p = document.createElement("div");
-p.classList.add("person","green");
+let p=document.createElement("div");
+let status=gerarStatus();
 
-p.style.top = Math.random()*95 + "%";
-p.style.left = Math.random()*95 + "%";
+p.classList.add("person",status);
 
-p.onclick = function(){
-document.getElementById("info").innerHTML =
-"<b>Participante "+(i+1)+"</b><br>Status: Normal<br>Local monitorado";
+p.style.top=Math.random()*95+"%";
+p.style.left=Math.random()*95+"%";
+
+p.dataset.id=i+1;
+
+p.onclick=function(){
+document.getElementById("info").innerHTML=
+"<b>Participante "+p.dataset.id+
+"</b><br>Status: "+status.toUpperCase()+
+"<br>Monitorado por pulseira AuraBand";
 }
 
 mapa.appendChild(p);
+pessoas.push(p);
 }
 
-document.getElementById("total").innerText = totalPessoas;
+/* MOVIMENTO AUTOMÁTICO */
+function moverPessoas(){
 
+pessoas.forEach(p=>{
+let novaTop=Math.random()*95;
+let novaLeft=Math.random()*95;
+
+p.style.top=novaTop+"%";
+p.style.left=novaLeft+"%";
+});
+
+}
+
+setInterval(moverPessoas,4000);
 
 /* ALERTA DE INTERVENÇÃO */
-
 function intervencao(){
 
-let pessoas = document.querySelectorAll(".person");
-let alvo = pessoas[Math.floor(Math.random()*pessoas.length)];
+let alvo=pessoas[Math.floor(Math.random()*pessoas.length)];
 
-alvo.classList.remove("green");
+alvo.classList.remove("green","yellow");
 alvo.classList.add("red");
 
-document.getElementById("alertas").innerText="1";
+document.getElementById("alertas").innerText++;
 
 let alerta=document.getElementById("alerta");
 alerta.style.display="block";
